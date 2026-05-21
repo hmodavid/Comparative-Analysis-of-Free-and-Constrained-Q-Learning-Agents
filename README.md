@@ -1,8 +1,8 @@
-# Multi-Agent Q-Learning for Evolutionary Games
+# Comparative Analysis of Multi-Agent Q-Learning for Evolutionary Games
 
 A reinforcement learning framework for studying evolutionary behavior in multi-agent environments using Q-Learning and the Iterated Prisoner’s Dilemma.
 
-This project is based on the original Multiagent Q-Learning for Evolutionary Games project developed by Yuzuki Wang and Hongyu Wang, extending the framework with constrained agents, strategic rule sets, comparative analysis, and behavioral metrics.
+This project is based on the original Multiagent Q-Learning for Evolutionary Games project, extending the framework with constrained agents, strategic rule sets, comparative analysis, and behavioral metrics.
 
 ---
 
