@@ -137,7 +137,7 @@ This framework is designed for experimentation in:
 
 Original project inspiration:
 
-Yuzuki Wang Hongyu Wang
+https://github.com/YuzukiWang/multiagent_q_learning_for_evolutionary_games
 
 Extended and modified with:
 
