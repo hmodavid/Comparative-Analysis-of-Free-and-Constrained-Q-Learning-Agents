@@ -79,6 +79,11 @@ from collections import OrderedDict
 import numpy as np
 import pickle
 from datetime import datetime
+import random
+import math
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 
 
 
@@ -1334,6 +1339,268 @@ print(
     "  phoC_mentor: ",
     Nc_mentor / TESTING_EPISODES / EPISODE_LENGTH
 )
+
+
+
+# ============================================================
+# ESTATÍSTICAS AVANÇADAS DAS ESTRATÉGIAS
+#
+# Este bloco:
+#
+# coleta scores por estratégia mentora
+# calcula média
+# calcula desvio padrão
+# gera gráficos estatísticos
+#
+# objetivo:
+#
+# comparar estabilidade
+# robustez
+# variabilidade
+# desempenho médio
+# ============================================================
+
+
+# ============================================================
+# DICIONÁRIO DE SCORES
+#
+# cada estratégia terá uma lista de pontuações
+# ============================================================
+
+strategy_scores = {}
+
+
+# ============================================================
+# INICIALIZA LISTAS
+# ============================================================
+
+for mentor in mentors:
+
+    strategy_name = mentor.strategy_print()
+
+    if strategy_name not in strategy_scores:
+
+        strategy_scores[strategy_name] = []
+
+
+# ============================================================
+# NOVA FASE DE COLETA ESTATÍSTICA
+#
+# executa partidas extras apenas para análise
+# ============================================================
+
+STATISTICAL_EPISODES = 500
+
+
+for episode in range(STATISTICAL_EPISODES):
+
+    state1 = []
+
+    state2 = []
+
+    player1 = random.choice(population)
+
+    player2 = random.choice(mentors)
+
+
+    # ========================================================
+    # EXECUTA EPISÓDIO
+    # ========================================================
+
+    for step in range(EPISODE_LENGTH):
+
+        action1 = player1.pick_action(state1)
+
+        action2 = player2.pick_action(state2)
+
+        state1.append([action2, action1])
+
+        state2.append([action1, action2])
+
+
+    # ========================================================
+    # CALCULA SCORE FINAL
+    # ========================================================
+
+    total_reward2 = 0
+
+
+    for step in range(EPISODE_LENGTH):
+
+        action1 = state2[step][0]
+
+        action2 = state1[step][0]
+
+
+        if action1 == 0 and action2 == 0:
+
+            reward2 = reward_matrix[0][0][1]
+
+        elif action1 == 0 and action2 == 1:
+
+            reward2 = reward_matrix[0][1][1]
+
+        elif action1 == 1 and action2 == 0:
+
+            reward2 = reward_matrix[0][2][1]
+
+        else:
+
+            reward2 = reward_matrix[0][3][1]
+
+
+        total_reward2 += reward2
+
+
+    # ========================================================
+    # ARMAZENA SCORE DA ESTRATÉGIA
+    # ========================================================
+
+    strategy_name = player2.strategy_print()
+
+    strategy_scores[strategy_name].append(
+        total_reward2
+    )
+
+
+# ============================================================
+# CONVERTE PARA DATAFRAME
+# ============================================================
+
+linhas = []
+
+
+for estrategia, scores in strategy_scores.items():
+
+    for score in scores:
+
+        linhas.append({
+
+            "estrategia": estrategia,
+
+            "score": score
+        })
+
+
+df = pd.DataFrame(linhas)
+
+
+# ============================================================
+# MÉDIA E DESVIO PADRÃO
+# ============================================================
+
+estatisticas = df.groupby(
+    "estrategia"
+)["score"].agg(
+
+    media="mean",
+
+    desvio="std"
+)
+
+
+print("")
+
+print("================================================")
+
+print("ESTATÍSTICAS DAS ESTRATÉGIAS")
+
+print("================================================")
+
+print("")
+
+print(estatisticas)
+
+
+# ============================================================
+# GRÁFICO DE MÉDIA E DESVIO PADRÃO
+# ============================================================
+
+plt.figure(figsize=(12,6))
+
+
+plt.bar(
+
+    estatisticas.index,
+
+    estatisticas["media"],
+
+    yerr=estatisticas["desvio"],
+
+    capsize=5
+)
+
+
+plt.xticks(rotation=20)
+
+plt.ylabel("Score Médio")
+
+plt.title(
+    "Média e Desvio Padrão por Estratégia"
+)
+
+plt.show()
+
+
+# ============================================================
+# BOXPLOT
+#
+# mostra dispersão
+# quartis
+# estabilidade
+# outliers
+# ============================================================
+
+plt.figure(figsize=(12,6))
+
+
+df.boxplot(
+
+    column="score",
+
+    by="estrategia",
+
+    grid=False
+)
+
+
+plt.xticks(rotation=20)
+
+plt.ylabel("Score")
+
+plt.title("Distribuição dos Scores")
+
+plt.suptitle("")
+
+plt.show()
+
+
+# ============================================================
+# HISTOGRAMA GERAL
+#
+# distribuição total dos scores
+# ============================================================
+
+plt.figure(figsize=(10,5))
+
+
+plt.hist(
+
+    df["score"],
+
+    bins=20
+)
+
+
+plt.xlabel("Score")
+
+plt.ylabel("Frequência")
+
+plt.title(
+    "Distribuição Geral dos Scores"
+)
+
+plt.show()
 
 
 
