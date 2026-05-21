@@ -133,19 +133,6 @@ This framework is designed for experimentation in:
 
 ---
 
-## Future Improvements
-
-Possible future extensions:
-
-* Deep Q-Learning integration
-* Dynamic rule generation
-* Genetic evolution of strategies
-* Population ecology systems
-* Tournament visualization tools
-* Distributed multi-agent training
-
----
-
 ## Credits
 
 Original project inspiration:
