@@ -984,13 +984,13 @@ class InteractiveExperimentRunner:
 
 if __name__ == "__main__":
     # Run with interactive input
-    runner = InteractiveExperimentRunner("article_results")
+    runner = InteractiveExperimentRunner("results")
     results = runner.run_all_experiments()
     
     print("\n" + "="*70)
     print(" EXPERIMENTS COMPLETE ".center(70, "="))
     print("="*70)
-    print("\nAll results saved to: article_results/")
+    print("\nAll results saved to: results/")
     print("\nFiles generated:")
     print("  - training_results.json")
     print("  - evaluation_results.json")
